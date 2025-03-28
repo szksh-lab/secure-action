@@ -1,8 +1,8 @@
-import fs from 'fs';
-import { Buffer } from 'buffer';
+import fs from "fs";
+import { Buffer } from "buffer";
 import * as core from "@actions/core";
-import YAML from 'yaml'
-import { temporaryFile } from 'tempy';
+import YAML from "yaml";
+import { temporaryFile } from "tempy";
 import * as lib from "./lib";
 
 export const client = async (input: lib.Input) => {
@@ -17,5 +17,8 @@ export const client = async (input: lib.Input) => {
   // Convert it to JSON
   // Encode it to base64
   // Append it to the temporary file
-  fs.appendFileSync(input.path, Buffer.from(JSON.stringify(YAML.parse(input.data))).toString('base64'));
+  fs.appendFileSync(
+    input.path,
+    Buffer.from(JSON.stringify(YAML.parse(input.data))).toString("base64"),
+  );
 };

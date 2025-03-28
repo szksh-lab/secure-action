@@ -1,9 +1,9 @@
-import fs from 'fs'
-import { Buffer } from 'buffer';
+import fs from "fs";
+import { Buffer } from "buffer";
 import * as core from "@actions/core";
 import * as github from "@actions/github";
-import YAML from 'yaml'
-import { temporaryFile } from 'tempy';
+import YAML from "yaml";
+import { temporaryFile } from "tempy";
 import * as lib from "./lib";
 import * as post from "./post";
 import * as client from "./client";
