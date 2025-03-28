@@ -8,7 +8,6 @@
     "@actions/core": "1.11.1",
     "@actions/github": "^6.0.0",
     "@octokit/graphql": "^8.1.1",
-    "tempy": "^3.1.0",
     "yaml": "^2.7.0",
     "zod": "^3.24.2"
   },

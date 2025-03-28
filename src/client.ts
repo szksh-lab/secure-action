@@ -1,4 +1,5 @@
 import fs from "fs";
+import os from "os";
 import path from "path";
 import { Buffer } from "buffer";
 import * as core from "@actions/core";
@@ -10,7 +11,7 @@ export const client = async (input: lib.Input) => {
   if (!input.path) {
     // path is a flag to indicate if the file is already created
     // If not, create a temporary file and set the flag
-    input.path = temporaryDirectory();
+    input.path = fs.mkdtempSync(path.join(os.tmpdir(), "securefix"));
     core.exportVariable("SECUREFIX_FILE_DIR", input.path);
   }
   // Read the input data
