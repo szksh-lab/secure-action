@@ -4,7 +4,6 @@ import path from "path";
 import { Buffer } from "buffer";
 import * as core from "@actions/core";
 import YAML from "yaml";
-import { temporaryDirectory } from "tempy";
 import * as lib from "./lib";
 
 export const client = async (input: lib.Input) => {
