@@ -40,6 +40,6 @@ export type Operation = z.infer<typeof Operation>;
 
 const Operations = z.array(Operation);
 
-export const readOpts = (opts: string): Operation[] => {
+export const readOps = (opts: string): Operation[] => {
   return Operations.parse(JSON.parse(opts));
 };

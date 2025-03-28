@@ -2,7 +2,7 @@ import * as github from "@actions/github";
 import * as lib from "./lib";
 
 export const run = async (input: lib.Input) => {
-  const opts = lib.readOpts(input.ops);
+  const opts = lib.readOps(input.ops);
   for (const op of opts) {
     await apply(input.githubToken, op);
   }

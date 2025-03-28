@@ -33,10 +33,13 @@ const run = async (input: lib.Input) => {
   switch (input.action) {
     case "":
       client.client(input);
+      break;
     case "server/prepare":
       prepare.prepare(input);
+      break;
     case "server/apply":
       apply.run(input);
+      break;
     default:
       throw new Error("Invalid action");
   }
