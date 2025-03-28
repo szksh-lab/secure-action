@@ -18,3 +18,13 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+
+      - uses: ./
+        with:
+          handler: github_api
+          method: rest.issues.createLabel
+          artifact_name: secure-action
+          data: |
+            owner: ${{github.event.repository.owner.login}}
+            repo: ${{github.event.repository.name}}
+            name: "test"

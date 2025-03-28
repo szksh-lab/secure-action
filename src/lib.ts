@@ -6,6 +6,10 @@ export type Input = {
   // state: A flag to indicate if the current action is a post action
   // If true, the action is a post action
   post: string;
+  // A handler handling the operation
+  handler: string;
+  // A handler method
+  method: string;
   // Required inputs
   data: string;
   // The action to be performed
@@ -29,7 +33,7 @@ export type Input = {
 
 const Operation = z.object({
   handler: z.string(),
-  action: z.string(),
+  method: z.string(),
   data: z.any(),
 });
 export type Operation = z.infer<typeof Operation>;

@@ -4,6 +4,28 @@ author: Shunsuke Suzuki
 branding:
   icon: lock
   color: green
+inputs:
+  action:
+    description: The action to run
+    required: false
+  handler:
+    description: The handler to use
+    required: false
+  method:
+    description: The method to use
+    required: false
+  data:
+    description: The data to send
+    required: false
+  artifact_name:
+    description: The name of the artifact
+    required: false
+  ops:
+    description: The operations to perform
+    required: false
+  github_token:
+    description: The GitHub token to use
+    required: false
 runs:
   using: "node20"
   main: "dist/index.js"

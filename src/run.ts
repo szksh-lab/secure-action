@@ -13,12 +13,14 @@ import * as apply from "./apply";
 export const main = async () => {
   run({
     post: core.getState("post"),
-    data: core.getInput("data", { required: true }),
-    artifactName: core.getInput("artifact_name"),
     action: core.getInput("action"),
+    data: core.getInput("data"),
+    artifactName: core.getInput("artifact_name"),
     ops: core.getInput("ops"),
     githubToken: core.getInput("github_token"),
-    path: process.env.SECUREFIX_FILE_PATH || "",
+    handler: core.getInput("handler"),
+    method: core.getInput("method"),
+    path: process.env.SECUREFIX_FILE_DIR || "",
     fileUploaded: process.env.SECUREFIX_FILE_UPLOADED === "true",
   });
 };

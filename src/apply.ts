@@ -16,9 +16,9 @@ const apply = async (githubToken: string, op: lib.Operation) => {
   const funcs = new Map<string, any>([
     ["rest.issues.createLabel", octokit.rest.issues.createLabel],
   ]);
-  const fn = funcs.get(op.action);
+  const fn = funcs.get(op.method);
   if (!fn) {
-    throw new Error(`Invalid action ${op.action}`);
+    throw new Error(`Invalid action ${op.method}`);
   }
   await fn(op.data);
 };
