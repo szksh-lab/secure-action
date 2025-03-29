@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { Buffer } from "buffer";
 import * as core from "@actions/core";
-import * as github from '@actions/github';
+import * as github from "@actions/github";
 import { WorkflowRunCompletedEvent } from "@octokit/webhooks-types";
 import * as lib from "./lib";
 
@@ -11,9 +11,13 @@ export const prepare = async (input: lib.Input) => {
   // output pull request number
   switch (github.context.eventName) {
     case "workflow_run":
-      const workflowRunEvent = github.context.payload as WorkflowRunCompletedEvent;
+      const workflowRunEvent = github.context
+        .payload as WorkflowRunCompletedEvent;
       if (workflowRunEvent.workflow_run.pull_requests.length === 1) {
-        core.setOutput("pull_request_number", workflowRunEvent.workflow_run.pull_requests[0].number);
+        core.setOutput(
+          "pull_request_number",
+          workflowRunEvent.workflow_run.pull_requests[0].number,
+        );
       }
     case "workflow_dispatch":
     case "repository_dispatch":
