@@ -19,12 +19,9 @@ export const post = async (input: lib.Input) => {
     return;
   }
   // validate
-  fs
-    .readFileSync(path.join(input.path, "ops.txt"), "utf8")
+  fs.readFileSync(path.join(input.path, "ops.txt"), "utf8")
     .split("\n")
-    .map((line: string) =>
-      JSON.parse(Buffer.from(line, "base64").toString()),
-    );
+    .map((line: string) => JSON.parse(Buffer.from(line, "base64").toString()));
   // upload to artifact
   const artifact = new DefaultArtifactClient();
   await artifact.uploadArtifact(
