@@ -14,10 +14,10 @@ const apply = async (githubToken: string, op: lib.Operation) => {
     return;
   }
   let entity: any = octokit;
-  for (const key in op.method.split(".")) {
+  for (const key of op.method.split(".")) {
     entity = entity[key];
     if (entity === undefined) {
-      throw new Error(`unsupported method: ${op.method}`);
+      throw new Error(`unsupported method: ${op.method} (${key})`);
     }
   }
   await entity(op.data);
