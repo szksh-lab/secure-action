@@ -4,6 +4,14 @@ import { DefaultArtifactClient } from "@actions/artifact";
 import * as lib from "./lib";
 
 export const post = async (input: lib.Input) => {
+  switch (input.action) {
+    case "":
+      break;
+    case "client":
+      break;
+    default:
+      return;
+  }
   // post upload a file to the artifact
   if (input.fileUploaded) {
     core.debug("File already uploaded");
