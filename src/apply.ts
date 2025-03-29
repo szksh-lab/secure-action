@@ -17,7 +17,7 @@ const apply = async (githubToken: string, op: lib.Operation) => {
   for (const key in op.method.split(".")) {
     entity = entity[key];
     if (entity === undefined) {
-      throw new Error(`unsupported method: ${op.method}`);
+      throw new Error(`unsupported method: ${op.method} (${key})`);
     }
   }
   await entity(op.data);
