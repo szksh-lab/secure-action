@@ -10,15 +10,15 @@ export const run = async (input: lib.Input) => {
 
 const apply = async (githubToken: string, op: lib.Operation) => {
   const octokit = github.getOctokit(githubToken);
-  if (op.handler !== "github_api") {
+  if (op.handler !== "octokit/rest.js") {
     return;
   }
-  const funcs = new Map<string, any>([
-    ["rest.issues.createLabel", octokit.rest.issues.createLabel],
-  ]);
-  const fn = funcs.get(op.method);
-  if (!fn) {
-    throw new Error(`Invalid action ${op.method}`);
+  let entity: any = octokit;
+  for (const key in op.method.split(".")) {
+    entity = entity[key];
+    if (entity === undefined) {
+      throw new Error(`unsupported method: ${op.method}`);
+    }
   }
-  await fn(op.data);
+  await entity(op.data);
 };
