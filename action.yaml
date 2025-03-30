@@ -17,9 +17,6 @@ inputs:
   data:
     description: The data to send
     required: false
-  artifact_name:
-    description: The name of the artifact
-    required: false
   ops:
     description: The operations to perform
     required: false
@@ -27,6 +24,9 @@ inputs:
     description: The GitHub token to use
     required: false
     default: ${{github.token}}
+  server_repository:
+    description: Server repository name
+    required: false
 runs:
   using: "node20"
   main: "dist/index.js"
