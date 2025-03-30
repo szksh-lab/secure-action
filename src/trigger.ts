@@ -16,7 +16,7 @@ export const run = async (input: lib.Input) => {
     throw new Error("server_repository is not set");
   }
   const artifactPrefix = "secure-action-label--";
-  const artifact = `${artifactPrefix}${Array.from({ length: 32 }, () => Math.floor(Math.random() * 36).toString(36)).join("")}`;
+  const artifact = `${artifactPrefix}${Array.from({ length: 29 }, () => Math.floor(Math.random() * 36).toString(36)).join("")}`;
   core.saveState("artifact", artifact);
   await lib.upload(input, artifact);
   await triggerWorkflowByLabel(input, artifact);
