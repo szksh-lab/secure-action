@@ -48,7 +48,7 @@ export const handleWorkflowRun = async (input: lib.Input) => {
       continue;
     }
     core.info(`Downloading an artifact ${artifact.name}`);
-    artifactClient.downloadArtifact(artifact.id, {
+    await artifactClient.downloadArtifact(artifact.id, {
       path: artifact.name,
       findBy: {
         workflowRunId: workflowRunEvent.workflow_run.id,
