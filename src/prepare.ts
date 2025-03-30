@@ -115,4 +115,15 @@ export const handleLabel = async (input: lib.Input) => {
   );
   core.info(`ops: ${ops}`);
   core.setOutput("ops", ops);
+  const event = fs.readFileSync("event.json", "utf8");
+  // Validate event.json
+  const eventJSON = JSON.parse(event);
+  core.info(`event: ${event}`);
+  core.setOutput("event", event);
+  if (eventJSON.pull_request) {
+    core.setOutput(
+      "pull_request_number",
+      eventJSON.pull_request.number,
+    );
+  }
 };
