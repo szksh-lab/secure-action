@@ -1,5 +1,8 @@
+import fs from "fs";
+import path from "path";
 import * as core from "@actions/core";
 import * as github from "@actions/github";
+import { DefaultArtifactClient } from "@actions/artifact";
 import { z } from "zod";
 
 export type Input = {
@@ -18,7 +21,7 @@ export type Input = {
   // server/apply: Apply the operations
   action: string;
   // The artifact name to be used for uploading the file
-  artifactName: string;
+  // artifactName: string;
   // The ops to be applied
   ops: string;
   // Optional inputs
@@ -27,8 +30,7 @@ export type Input = {
   // Environment variables
   // A file path to store the temporary file
   path: string;
-  // A flag to indicate if the file has already been uploaded
-  fileUploaded: boolean;
+  serverRepository: string;
 };
 
 const Operation = z.object({
@@ -42,4 +44,30 @@ const Operations = z.array(Operation);
 
 export const readOps = (opts: string): Operation[] => {
   return Operations.parse(JSON.parse(opts));
+};
+
+export const upload = async (input: Input, artifactName: string) => {
+  try {
+    // validate
+    fs.readFileSync(path.join(input.path, "ops.txt"), "utf8")
+      .split("\n")
+      .map((line: string) =>
+        JSON.parse(Buffer.from(line, "base64").toString()),
+      );
+  } catch (err: any) {
+    if (err.code === "ENOENT") {
+      // If the file does not exist, the file has already been uploaded.
+      return;
+    }
+    throw err;
+  }
+  // upload to artifact
+  const artifact = new DefaultArtifactClient();
+  await artifact.uploadArtifact(
+    artifactName,
+    [path.join(input.path, "ops.txt")],
+    input.path,
+  );
+  // delete files
+  fs.rmSync(input.path, { recursive: true, force: true });
 };

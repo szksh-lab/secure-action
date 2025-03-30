@@ -14,28 +14,34 @@ export const main = async () => {
     post: core.getState("post"),
     action: core.getInput("action"),
     data: core.getInput("data"),
-    artifactName: core.getInput("artifact_name"),
+    // artifactName: core.getInput("artifact_name"),
     ops: core.getInput("ops"),
     githubToken: core.getInput("github_token"),
     handler: core.getInput("handler"),
     method: core.getInput("method"),
     path: process.env.SECUREFIX_FILE_DIR || "",
-    fileUploaded: process.env.SECUREFIX_FILE_UPLOADED === "true",
+    serverRepository: core.getInput("server_repository"),
   });
 };
 
 const run = async (input: lib.Input) => {
   if (input.post) {
-    post.post(input);
+    post.run(input);
     return;
   }
   core.saveState("post", "true");
   switch (input.action) {
     case "":
-      client.client(input);
+      client.run(input);
+      break;
+    case "client":
+      client.run(input);
+      break;
+    case "trigger":
+      client.run(input);
       break;
     case "server/prepare":
-      prepare.prepare(input);
+      prepare.run(input);
       break;
     case "server/apply":
       apply.run(input);
