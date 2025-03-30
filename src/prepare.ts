@@ -6,7 +6,7 @@ import * as github from "@actions/github";
 import { WorkflowRunCompletedEvent } from "@octokit/webhooks-types";
 import * as lib from "./lib";
 
-export const prepare = async (input: lib.Input) => {
+export const run = async (input: lib.Input) => {
   // prepare parse the input data and outputs it as JSON
   // output pull request number
   switch (github.context.eventName) {

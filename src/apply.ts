@@ -10,7 +10,7 @@ export const run = async (input: lib.Input) => {
 
 const apply = async (githubToken: string, op: lib.Operation) => {
   const octokit = github.getOctokit(githubToken);
-  if (op.handler !== "octokit/rest.js") {
+  if (op.handler !== "secure-action/action:octokit/rest.js") {
     return;
   }
   let entity: any = octokit;
