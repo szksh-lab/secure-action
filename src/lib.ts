@@ -64,13 +64,13 @@ export const upload = async (input: Input, artifactName: string) => {
   }
   // upload to artifact
   const artifact = new DefaultArtifactClient();
-  core.info(`Uploading the artifact ${artifactName}`,)
+  core.info(`Uploading the artifact ${artifactName}`);
   await artifact.uploadArtifact(
     artifactName,
     [path.join(input.path, "ops.txt")],
     input.path,
   );
   // delete files
-  core.info(`Deleting the uploaded file ${input.path}`,)
+  core.info(`Deleting the uploaded file ${input.path}`);
   fs.rmSync(input.path, { recursive: true, force: true });
 };
