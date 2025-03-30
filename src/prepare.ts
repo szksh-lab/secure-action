@@ -97,7 +97,7 @@ export const handleLabel = async (input: lib.Input) => {
     },
   });
   core.info(`Downloading an artifact ${artifactName}`);
-  artifactClient.downloadArtifact(resp.artifact.id, {
+  await artifactClient.downloadArtifact(resp.artifact.id, {
     findBy: {
       workflowRunId: parseInt(runID),
       repositoryOwner: github.context.repo.owner,
