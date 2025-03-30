@@ -8,6 +8,7 @@ import * as post from "./post";
 import * as client from "./client";
 import * as prepare from "./prepare";
 import * as apply from "./apply";
+import * as trigger from "./trigger";
 
 export const main = async () => {
   run({
@@ -38,7 +39,7 @@ const run = async (input: lib.Input) => {
       client.run(input);
       break;
     case "trigger":
-      client.run(input);
+      trigger.run(input);
       break;
     case "server/prepare":
       prepare.run(input);
