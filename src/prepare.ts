@@ -76,17 +76,16 @@ export const handleLabel = async (input: lib.Input) => {
   // get a label name and description
   const labelEvent = github.context.payload as LabelCreatedEvent;
   const artifactName = labelEvent.label.name;
-  // <owner>/<repo>/<workflow_run_id>
+  // <repo>/<workflow_run_id>
   const arr = labelEvent.label.description?.split("/");
   if (arr === undefined) {
     return;
   }
-  if (arr.length !== 3) {
+  if (arr.length !== 2) {
     return;
   }
-  const owner = arr[0];
-  const repo = arr[1];
-  const runID = arr[2];
+  const repo = arr[0];
+  const runID = arr[1];
   // download the artifact
   core.info(`Getting an artifact ${artifactName}`);
   const resp = await artifactClient.getArtifact(artifactName);
@@ -94,7 +93,7 @@ export const handleLabel = async (input: lib.Input) => {
   artifactClient.downloadArtifact(resp.artifact.id, {
     findBy: {
       workflowRunId: parseInt(runID),
-      repositoryOwner: owner,
+      repositoryOwner: github.context.repo.owner,
       repositoryName: repo,
       token: input.githubToken,
     },
