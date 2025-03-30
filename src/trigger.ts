@@ -27,6 +27,7 @@ export const triggerWorkflowByLabel = async (
   label: string,
 ) => {
   const octokit = github.getOctokit(input.githubToken);
+  core.info(`creating a label ${label} to ${github.context.repo.owner}/${input.serverRepository}`);
   await octokit.rest.issues.createLabel({
     owner: github.context.repo.owner,
     repo: input.serverRepository,
@@ -34,6 +35,7 @@ export const triggerWorkflowByLabel = async (
     description: `${input.serverRepository}/${process.env.GITHUB_RUN_ID}`,
   });
   await setTimeout(1000);
+  core.info(`deleting a label ${label}`);
   await octokit.rest.issues.deleteLabel({
     owner: github.context.repo.owner,
     repo: input.serverRepository,
