@@ -30,6 +30,9 @@ export const handleWorkflowRun = async (input: lib.Input) => {
     );
   }
   // download artifacts
+  core.info(
+    `Listing artifacts ${github.context.repo.owner}/${github.context.repo.repo} ${workflowRunEvent.workflow_run.id}`,
+  );
   const listArtifactResponse = await artifactClient.listArtifacts({
     findBy: {
       workflowRunId: workflowRunEvent.workflow_run.id,
@@ -40,26 +43,32 @@ export const handleWorkflowRun = async (input: lib.Input) => {
   });
   const ops: any[] = [];
   for (const artifact of listArtifactResponse.artifacts) {
-    if (artifact.name.startsWith("secure-action--")) {
-      artifactClient.downloadArtifact(artifact.id, {
-        path: artifact.name,
-        findBy: {
-          workflowRunId: workflowRunEvent.workflow_run.id,
-          repositoryOwner: github.context.repo.owner,
-          repositoryName: github.context.repo.repo,
-          token: input.githubToken,
-        },
-      });
+    if (!artifact.name.startsWith("secure-action--")) {
+      core.info(`Ignoring an artifact ${artifact.name}`);
+      continue;
     }
+    core.info(`Downloading an artifact ${artifact.name}`);
+    artifactClient.downloadArtifact(artifact.id, {
+      path: artifact.name,
+      findBy: {
+        workflowRunId: workflowRunEvent.workflow_run.id,
+        repositoryOwner: github.context.repo.owner,
+        repositoryName: github.context.repo.repo,
+        token: input.githubToken,
+      },
+    });
+    const file = path.join(artifact.name, "ops.txt");
+    core.info(`Reading an artifact ${file}`);
     ops.push(
       ...fs
-        .readFileSync(path.join(artifact.name, "ops.txt"), "utf8")
+        .readFileSync(file, "utf8")
         .split("\n")
         .map((line: string) =>
           JSON.parse(Buffer.from(line, "base64").toString()),
         ),
     );
   }
+  core.info(`ops: ${JSON.stringify(ops)}`);
   core.setOutput("ops", JSON.stringify(ops));
 };
 
@@ -79,7 +88,9 @@ export const handleLabel = async (input: lib.Input) => {
   const repo = arr[1];
   const runID = arr[2];
   // download the artifact
+  core.info(`Getting an artifact ${artifactName}`);
   const resp = await artifactClient.getArtifact(artifactName);
+  core.info(`Downloading an artifact ${artifactName}`);
   artifactClient.downloadArtifact(resp.artifact.id, {
     findBy: {
       workflowRunId: parseInt(runID),
@@ -88,15 +99,14 @@ export const handleLabel = async (input: lib.Input) => {
       token: input.githubToken,
     },
   });
-  core.setOutput(
-    "ops",
-    JSON.stringify(
-      fs
-        .readFileSync("ops.txt", "utf8")
-        .split("\n")
-        .map((line: string) =>
-          JSON.parse(Buffer.from(line, "base64").toString()),
-        ),
-    ),
+  const ops = JSON.stringify(
+    fs
+      .readFileSync("ops.txt", "utf8")
+      .split("\n")
+      .map((line: string) =>
+        JSON.parse(Buffer.from(line, "base64").toString()),
+      ),
   );
+  core.info(`ops: ${ops}`);
+  core.setOutput("ops", ops);
 };
