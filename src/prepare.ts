@@ -3,7 +3,11 @@ import path from "path";
 import { Buffer } from "buffer";
 import * as core from "@actions/core";
 import * as github from "@actions/github";
-import { WorkflowRunCompletedEvent } from "@octokit/webhooks-types";
+import {
+  LabelCreatedEvent,
+  WorkflowRunCompletedEvent,
+} from "@octokit/webhooks-types";
+import artifactClient from "@actions/artifact";
 import * as lib from "./lib";
 
 export const run = async (input: lib.Input) => {
@@ -11,23 +15,84 @@ export const run = async (input: lib.Input) => {
   // output pull request number
   switch (github.context.eventName) {
     case "workflow_run":
-      const workflowRunEvent = github.context
-        .payload as WorkflowRunCompletedEvent;
-      if (workflowRunEvent.workflow_run.pull_requests.length === 1) {
-        core.setOutput(
-          "pull_request_number",
-          workflowRunEvent.workflow_run.pull_requests[0].number,
-        );
-      }
-    case "workflow_dispatch":
-    case "repository_dispatch":
+      return await handleWorkflowRun(input);
     case "label":
+      return await handleLabel(input);
   }
+};
+
+export const handleWorkflowRun = async (input: lib.Input) => {
+  const workflowRunEvent = github.context.payload as WorkflowRunCompletedEvent;
+  if (workflowRunEvent.workflow_run.pull_requests.length === 1) {
+    core.setOutput(
+      "pull_request_number",
+      workflowRunEvent.workflow_run.pull_requests[0].number,
+    );
+  }
+  // download artifacts
+  const listArtifactResponse = await artifactClient.listArtifacts({
+    findBy: {
+      workflowRunId: workflowRunEvent.workflow_run.id,
+      repositoryOwner: github.context.repo.owner,
+      repositoryName: github.context.repo.repo,
+      token: input.githubToken,
+    },
+  });
+  const ops: any[] = [];
+  for (const artifact of listArtifactResponse.artifacts) {
+    if (artifact.name.startsWith("secure-action--")) {
+      artifactClient.downloadArtifact(artifact.id, {
+        path: artifact.name,
+        findBy: {
+          workflowRunId: workflowRunEvent.workflow_run.id,
+          repositoryOwner: github.context.repo.owner,
+          repositoryName: github.context.repo.repo,
+          token: input.githubToken,
+        },
+      });
+    }
+    ops.push(
+      ...fs
+        .readFileSync(path.join(artifact.name, "ops.txt"), "utf8")
+        .split("\n")
+        .map((line: string) =>
+          JSON.parse(Buffer.from(line, "base64").toString()),
+        ),
+    );
+  }
+  core.setOutput("ops", JSON.stringify(ops));
+};
+
+export const handleLabel = async (input: lib.Input) => {
+  // get a label name and description
+  const labelEvent = github.context.payload as LabelCreatedEvent;
+  const artifactName = labelEvent.label.name;
+  // <owner>/<repo>/<workflow_run_id>
+  const arr = labelEvent.label.description?.split("/");
+  if (arr === undefined) {
+    return;
+  }
+  if (arr.length !== 3) {
+    return;
+  }
+  const owner = arr[0];
+  const repo = arr[1];
+  const runID = arr[2];
+  // download the artifact
+  const resp = await artifactClient.getArtifact(artifactName);
+  artifactClient.downloadArtifact(resp.artifact.id, {
+    findBy: {
+      workflowRunId: parseInt(runID),
+      repositoryOwner: owner,
+      repositoryName: repo,
+      token: input.githubToken,
+    },
+  });
   core.setOutput(
     "ops",
     JSON.stringify(
       fs
-        .readFileSync(path.join(input.path, "ops.txt"), "utf8")
+        .readFileSync("ops.txt", "utf8")
         .split("\n")
         .map((line: string) =>
           JSON.parse(Buffer.from(line, "base64").toString()),
