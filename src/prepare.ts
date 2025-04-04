@@ -121,9 +121,6 @@ export const handleLabel = async (input: lib.Input) => {
   core.info(`event: ${event}`);
   core.setOutput("event", event);
   if (eventJSON.pull_request) {
-    core.setOutput(
-      "pull_request_number",
-      eventJSON.pull_request.number,
-    );
+    core.setOutput("pull_request_number", eventJSON.pull_request.number);
   }
 };
