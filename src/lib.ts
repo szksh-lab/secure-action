@@ -67,7 +67,10 @@ export const upload = async (input: Input, artifactName: string) => {
   if (!process.env.GITHUB_EVENT_PATH) {
     throw new Error("GITHUB_EVENT_PATH is not set");
   }
-  fs.copyFileSync(process.env.GITHUB_EVENT_PATH, path.join(input.path, "event.json"));
+  fs.copyFileSync(
+    process.env.GITHUB_EVENT_PATH,
+    path.join(input.path, "event.json"),
+  );
   // upload to artifact
   const artifact = new DefaultArtifactClient();
   core.info(`Uploading the artifact ${artifactName}`);

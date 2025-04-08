@@ -57,8 +57,8 @@ Secure Action can run these tasks securely by `workflow_run` event.
 --
 
 2. In the team development on private repositories, sometimes you want to call API of GitHub and SaaS such as AWS in GitHub Actions.
-You can grant the permission to GitHub Actions, but it may be abused.
-For instance, an attacker may be able to create a pull request with malicious commits using GitHub App and approve and merge the pull request.
+   You can grant the permission to GitHub Actions, but it may be abused.
+   For instance, an attacker may be able to create a pull request with malicious commits using GitHub App and approve and merge the pull request.
 
 To solve this problem, Secure Action adopts a Client/Server Model.
 A client workflow is a workflow which people trigger.
