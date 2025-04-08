@@ -11,19 +11,17 @@ export type Input = {
   post: string;
   // A handler handling the operation
   handler: string;
-  // A handler method
-  method: string;
   // Required inputs
   data: string;
   // The action to be performed
   // client (default): Write the input data to a temporary file
   // server/prepare: Parse the input data and outputs it as JSON
-  // server/apply: Apply the operations
+  // server/apply: Apply the tasks
   action: string;
   // The artifact name to be used for uploading the file
   // artifactName: string;
-  // The ops to be applied
-  ops: string;
+  // The tasks to be applied
+  tasks: string;
   // Optional inputs
   // GitHub Access Token
   githubToken: string;
@@ -33,24 +31,23 @@ export type Input = {
   serverRepository: string;
 };
 
-const Operation = z.object({
+const Task = z.object({
   handler: z.string(),
-  method: z.string(),
   data: z.any(),
 });
-export type Operation = z.infer<typeof Operation>;
+export type Task = z.infer<typeof Task>;
 
-const Operations = z.array(Operation);
+const Tasks = z.array(Task);
 
-export const readOps = (opts: string): Operation[] => {
-  return Operations.parse(JSON.parse(opts));
+export const readTasks = (tasks: string): Task[] => {
+  return Tasks.parse(JSON.parse(tasks));
 };
 
 export const upload = async (input: Input, artifactName: string) => {
   try {
     // validate
-    core.info(`Validating the input data ${input.path}/ops.txt`);
-    fs.readFileSync(path.join(input.path, "ops.txt"), "utf8")
+    core.info(`Validating the input data ${input.path}/tasks.txt`);
+    fs.readFileSync(path.join(input.path, "tasks.txt"), "utf8")
       .split("\n")
       .map((line: string) =>
         JSON.parse(Buffer.from(line, "base64").toString()),
@@ -76,7 +73,7 @@ export const upload = async (input: Input, artifactName: string) => {
   core.info(`Uploading the artifact ${artifactName}`);
   await artifact.uploadArtifact(
     artifactName,
-    [path.join(input.path, "ops.txt")],
+    [path.join(input.path, "tasks.txt")],
     input.path,
   );
   // delete files

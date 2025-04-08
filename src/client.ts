@@ -21,11 +21,10 @@ export const run = async (input: lib.Input) => {
   // Encode it to base64
   // Append it to the temporary file
   fs.appendFileSync(
-    path.join(input.path, "ops.txt"),
+    path.join(input.path, "tasks.txt"),
     Buffer.from(
       JSON.stringify({
         handler: input.handler,
-        method: input.method,
         data: YAML.parse(input.data),
       }),
     ).toString("base64"),

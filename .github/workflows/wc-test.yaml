@@ -21,10 +21,11 @@ jobs:
 
       - uses: ./
         with:
-          handler: github_api
-          method: rest.issues.createLabel
-          artifact_name: secure-action
+          handler: octokit/rest.js
           data: |
-            owner: ${{github.event.repository.owner.login}}
-            repo: ${{github.event.repository.name}}
-            name: "test"
+            method: rest.issues.addLabels
+            data:
+              owner: ${{github.event.repository.owner.login}}
+              repo: ${{github.event.repository.name}}
+              issue_number: ${{github.event.pull_request.number}}
+              name: test

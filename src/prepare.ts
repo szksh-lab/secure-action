@@ -41,7 +41,7 @@ export const handleWorkflowRun = async (input: lib.Input) => {
       token: input.githubToken,
     },
   });
-  const ops: any[] = [];
+  const tasks: any[] = [];
   for (const artifact of listArtifactResponse.artifacts) {
     if (!artifact.name.startsWith("secure-action--")) {
       core.info(`Ignoring an artifact ${artifact.name}`);
@@ -57,9 +57,9 @@ export const handleWorkflowRun = async (input: lib.Input) => {
         token: input.githubToken,
       },
     });
-    const file = path.join(artifact.name, "ops.txt");
+    const file = path.join(artifact.name, "tasks.txt");
     core.info(`Reading an artifact ${file}`);
-    ops.push(
+    tasks.push(
       ...fs
         .readFileSync(file, "utf8")
         .split("\n")
@@ -68,8 +68,8 @@ export const handleWorkflowRun = async (input: lib.Input) => {
         ),
     );
   }
-  core.info(`ops: ${JSON.stringify(ops)}`);
-  core.setOutput("ops", JSON.stringify(ops));
+  core.info(`tasks: ${JSON.stringify(tasks)}`);
+  core.setOutput("tasks", JSON.stringify(tasks));
 };
 
 export const handleLabel = async (input: lib.Input) => {
@@ -105,16 +105,16 @@ export const handleLabel = async (input: lib.Input) => {
       token: input.githubToken,
     },
   });
-  const ops = JSON.stringify(
+  const tasks = JSON.stringify(
     fs
-      .readFileSync("ops.txt", "utf8")
+      .readFileSync("tasks.txt", "utf8")
       .split("\n")
       .map((line: string) =>
         JSON.parse(Buffer.from(line, "base64").toString()),
       ),
   );
-  core.info(`ops: ${ops}`);
-  core.setOutput("ops", ops);
+  core.info(`tasks: ${tasks}`);
+  core.setOutput("tasks", tasks);
   const event = fs.readFileSync("event.json", "utf8");
   // Validate event.json
   const eventJSON = JSON.parse(event);

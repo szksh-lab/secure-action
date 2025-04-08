@@ -1,9 +1,9 @@
-name: Securefix
-description: Securefix
+name: Secure Action
+description: Secure Action is GitHub Actions to run any pre-defined tasks securely
 author: Shunsuke Suzuki
 branding:
-  icon: lock
-  color: green
+  icon: shield
+  color: blue
 inputs:
   action:
     description: The action to run
@@ -11,14 +11,11 @@ inputs:
   handler:
     description: The handler to use
     required: false
-  method:
-    description: The method to use
-    required: false
   data:
     description: The data to send
     required: false
-  ops:
-    description: The operations to perform
+  tasks:
+    description: Tasks
     required: false
   github_token:
     description: The GitHub token to use
