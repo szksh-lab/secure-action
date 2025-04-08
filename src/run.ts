@@ -9,6 +9,7 @@ import * as client from "./client";
 import * as prepare from "./prepare";
 import * as apply from "./apply";
 import * as trigger from "./trigger";
+import * as notify from "./notify";
 
 export const main = async () => {
   run({
@@ -47,7 +48,7 @@ const run = async (input: lib.Input) => {
       apply.run(input);
       break;
     case "server/notify":
-      apply.run(input);
+      notify.run(input);
       break;
     default:
       throw new Error(`Invalid action ${input.action}`);
