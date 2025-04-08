@@ -9,6 +9,7 @@ import * as client from "./client";
 import * as prepare from "./prepare";
 import * as apply from "./apply";
 import * as trigger from "./trigger";
+import * as notify from "./notify";
 
 export const main = async () => {
   run({
@@ -16,10 +17,9 @@ export const main = async () => {
     action: core.getInput("action"),
     data: core.getInput("data"),
     // artifactName: core.getInput("artifact_name"),
-    ops: core.getInput("ops"),
+    tasks: core.getInput("tasks"),
     githubToken: core.getInput("github_token"),
     handler: core.getInput("handler"),
-    method: core.getInput("method"),
     path: process.env.SECUREFIX_FILE_DIR || "",
     serverRepository: core.getInput("server_repository"),
   });
@@ -47,7 +47,10 @@ const run = async (input: lib.Input) => {
     case "server/apply":
       apply.run(input);
       break;
+    case "server/notify":
+      notify.run(input);
+      break;
     default:
-      throw new Error("Invalid action");
+      throw new Error(`Invalid action ${input.action}`);
   }
 };
